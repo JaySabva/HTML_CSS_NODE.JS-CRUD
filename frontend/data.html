@@ -168,6 +168,7 @@
         event.preventDefault();
         try {
             const userData = {
+                _id: id,
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 mobileNumber: parseInt(document.getElementById('mobileNumber').value),
