@@ -61,7 +61,7 @@
 <body>
 <h1>User Data</h1>
 <div id="userList" style="display: block"></div>
-<form id="editForm" style="display: none" onsubmit="submitEditForm()">
+<form id="editForm" style="display: none">
     <label for="name">Name</label>
     <input placeholder="example etc" type="text" id="name" name="name" required pattern="^[a-z A-Z]{2,30}$">
     <br>
@@ -164,7 +164,8 @@
         }
     }
 
-    async function submitEditForm(id) {
+    async function submitEditForm(event, id) {
+        event.preventDefault();
         try {
             const userData = {
                 name: document.getElementById('name').value,
