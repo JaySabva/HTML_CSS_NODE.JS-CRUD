@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <script src="./js/country-states.js"></script>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5%;
+            margin-left: 40%;
+        }
+    </style>
+</head>
+<body>
+<h1>User Reg Form</h1>
+<form id="UserRegForm" onsubmit="event.preventDefault(); submitForm();">
+    <label for="name">Name</label>
+    <input placeholder="example etc" type="text" id="name" name="name" required pattern="^[a-z A-Z]{2,30}$">
+    <br>
+    <label for="email">Email</label>
+    <input placeholder="example@example.com" type="email" id="email" name="email" required pattern="^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$">
+    <br>
+
+    <label for="mobileNumber">Mobile Number</label>
+    <input placeholder="xxxxxxxxxx" type="text" id="mobileNumber" name="mobileNumber" required pattern="^[0-9]{10}$">
+    <br>
+
+    <label for="country" class="form-label">Country</label>
+    <select id="country" class="form-select">
+        <option>select country</option>
+    </select>
+    <br>
+
+    <label for="state" class="form-label">State</label>
+    <select id="state" class="form-select">
+        <option>_</option>
+    </select>
+    <br>
+
+    <label for="city">City</label>
+    <input type="text" id="city" name="city" required>
+    <br>
+
+    <label for="address">Address</label>
+    <textarea id="address" name="address" required minlength="5"></textarea>
+    <br>
+
+    <label for="aadharNumber">Aadhar Number</label>
+    <input placeholder="xxxx xxxx xxxx" type="text" id="aadharNumber" name="aadharNumber" required pattern="^\d{4} \d{4} \d{4}$">
+    <br>
+
+    <label for="pancard">Pancard</label>
+    <input type="text" id="pancard" name="pancard" required pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$">
+    <br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    async function submitForm() {
+        const userData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            mobileNumber: parseInt(document.getElementById('mobileNumber').value),
+            country: document.getElementById('country').value,
+            state: document.getElementById('state').value,
+            city: document.getElementById('city').value,
+            address: document.getElementById('address').value,
+            aadharnumber: document.getElementById('aadharNumber').value, // Fixed property name
+            pancard: document.getElementById('pancard').value,
+        }
+        console.log(userData);
+        console.log("YEs");
+        try {
+            const res = await fetch('http://localhost:3000/user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+            console.log(res);
+            if (res.ok) {
+                alert('User registered successfully');
+            } else {
+                const errorData = await res.json();
+                if (errorData.message) {
+                    alert(errorData.message);
+                } else {
+                    alert('Error registering user');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred');
+        }
+    }
+    var user_country_code = "IN";
+
+    (() => {
+        // script https://www.html-code-generator.com/html/drop-down/state-name
+
+        // Get the country name and state name from the imported script.
+        const country_array = country_and_states.country;
+        const states_array = country_and_states.states;
+
+        const id_state_option = document.getElementById("state");
+        const id_country_option = document.getElementById("country");
+
+        const createCountryNamesDropdown = () => {
+            let option =  '';
+            option += '<option value="">select country</option>';
+
+            for(let country_code in country_array){
+                // set selected option user country
+                let selected = (country_code == user_country_code) ? ' selected' : '';
+                option += '<option value="'+country_code+'"'+selected+'>'+country_array[country_code]+'</option>';
+            }
+            id_country_option.innerHTML = option;
+        };
+
+        const createStatesNamesDropdown = () => {
+            let selected_country_code = id_country_option.value;
+            // get state names
+            let state_names = states_array[selected_country_code];
+
+            // if invalid country code
+            if(!state_names){
+                id_state_option.innerHTML = '<option>select state</option>';
+                return;
+            }
+            let option = '';
+            option += '<select id="state">';
+            option += '<option>select state</option>';
+            for (let i = 0; i < state_names.length; i++) {
+                option += '<option value="'+state_names[i].code+'">'+state_names[i].name+'</option>';
+            }
+            option += '</select>';
+            id_state_option.innerHTML = option;
+        };
+
+        // country select change event
+        id_country_option.addEventListener('change', createStatesNamesDropdown);
+
+        createCountryNamesDropdown();
+        createStatesNamesDropdown();
+    })();
+</script>
+</body>
+</html>
