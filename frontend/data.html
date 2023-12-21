@@ -101,6 +101,10 @@
     <input type="text" id="pancard" name="pancard" required pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$">
     <br>
 
+    <label for="profilePic">Profile Picture</label>
+    <input type="file" id="profilePic" name="profilePic" accept="image/*">
+    <br>
+
     <button type="submit" class="i1">Submit</button>
     <button type="button" class="i1" onclick="changeProp()">Cancel</button>
 
@@ -179,13 +183,21 @@
                 aadharnumber: document.getElementById('aadharNumber').value,
                 pancard: document.getElementById('pancard').value,
             }
+
+            const formData = new FormData();
+
+            for (const key in userData) {
+                formData.append(key, userData[key]);
+            }
+
+            const profilePicInput = document.getElementById('profilePic');
+            formData.append('profilePhoto', profilePicInput.files[0]);
+
             const res = await fetch(`http://localhost:3000/user/update/${id}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
+                body: formData,
             });
+
             if (res.status === 200) {
                 alert('User updated successfully');
                 location.reload();
@@ -211,6 +223,7 @@
             const userDiv = document.createElement('div');
             userDiv.className = 'user-card';
             userDiv.innerHTML = `
+                <img src="http://localhost:3000/${user.profilePic}" alt="Profile Photo" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
                 <h2 style="margin-left: 5%">${user.name}</h2>
                 <p><strong>Email:</strong> ${user.email}</p>
                 <p><strong>Mobile Number:</strong> ${user.mobileNumber}</p>
