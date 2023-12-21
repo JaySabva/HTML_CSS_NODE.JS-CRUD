@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+const path = require('path');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/user', userRoutes);
 
 // ERROR HANDLING
