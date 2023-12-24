@@ -60,6 +60,12 @@
 </head>
 <body>
 <h1>User Data</h1>
+<button><a href="http://localhost:3000/user/dataexcel">Export to Excel</a></button>
+<form action="http://localhost:3000/user/dataexcel" method="post" enctype="multipart/form-data">
+    <label for="file">Upload Excel File</label>
+    <input type="file" id="file" name="excelFile" accept=".xlsx">
+    <button type="submit" class="i1">Submit</button>
+</form>
 <div id="userList" style="display: block"></div>
 <form id="editForm" style="display: none">
     <label for="name">Name</label>
